@@ -1,12 +1,68 @@
-public class Main { // AFD = (Q, Σ, δ, q0, F)
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class Main{ // AFD = (Q, Σ, δ, q0, F)
     /*
      * L1 = {w in Σ* | w é par ou vazio}
      * L2 = {w in Σ* | w comeca com y e termina com x}
      * L3 = {w in Σ* | w é float ou for}
      */
-    public static void main(String[] args) {
-        L3();
+
+    public Main(){
+
     }
+
+    public static void main(String[] args) throws InterruptedException{
+        Main main = new Main();
+
+        main.start();
+    }
+
+    public void start(){
+        GUI gui = new GUI();
+        Thread t = new Thread(){
+            @Override
+            public void run() {
+                while (true){
+                    gui.render();
+                    try{
+                        Thread.sleep(500);
+                    }catch (InterruptedException i){
+                        i.getCause();
+                    }
+
+                }
+            }
+        };
+        t.start();
+
+
+    }
+
+    public void makeTransitions() throws IOException {
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("path"));
+            String line = "";
+
+            while((line = br.readLine()) != null){
+
+            }
+
+
+        }catch (FileNotFoundException f){
+            f.getCause();
+        }
+
+    }
+
     public static void arroba(State q, State qn, String w) {
         for(char c : w.toCharArray())
             q.addTransition(qn, c);
@@ -92,6 +148,7 @@ public class Main { // AFD = (Q, Σ, δ, q0, F)
         AFD afd = new AFD(q0, w);
         verify(afd.run(), w);
     }
+
     public static void verify(boolean b, String w) {
         if(b) {
             System.out.println("Reconheceu: " + w);

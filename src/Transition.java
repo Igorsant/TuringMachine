@@ -1,6 +1,8 @@
 public class Transition {
     private final State state;
     private final Edge edge;
+    private String ins;
+    private String write;
     public Transition(final State s, final Edge e) {
         this.state = s;
         this.edge = e;
