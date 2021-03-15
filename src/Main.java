@@ -32,7 +32,7 @@ public class Main{ // AFD = (Q, Σ, δ, q0, F)
             @Override
             public void run() {
                 while (true){
-                    gui.render();
+                    gui.render(this);
                     try{
                         Thread.sleep(500);
                     }catch (InterruptedException i){
