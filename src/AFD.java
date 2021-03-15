@@ -1,14 +1,15 @@
 public class AFD { // AFD = (Q, Σ, δ, q0, F)
     protected State q;
-    protected String w = "";
+    protected String w;
 
     public AFD(State q, String w) {
         this.q = q;
         this.w = w;
     }
+
     public boolean run() {
-        if(q==null || w==null)
-            return false;
+        if(q == null || w == null) return false;
+
         for(Character c: this.w.toCharArray()) {
 
             Transition transition = q.transition(c);

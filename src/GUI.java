@@ -19,7 +19,8 @@ public class GUI extends Canvas{
         frame.setVisible(true);
 
         fita = new Cell[21];
-        for(int i=0; i<fita.length; i++){
+
+        for(int i=0; i < fita.length; i++){
             fita[i] = new Cell(i*50);
         }
     }

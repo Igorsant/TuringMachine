@@ -1,12 +1,17 @@
 public class Transition {
     private final State state;
     private final Edge edge;
-    private String ins;
-    private String write;
-    public Transition(final State s, final Edge e) {
+    private char cEscrever;
+    private String direcao;
+
+    // Alterar método para igualar
+    public Transition(final State s, final Edge e, char cEscrever, String direcao) {
         this.state = s;
         this.edge = e;
+        this.cEscrever = cEscrever;
+        this.direcao = direcao;
     }
+
     public Edge getEdge() { return edge; }
     public State getState() { return state; }
 
@@ -21,7 +26,7 @@ public class Transition {
     @Override
     public int hashCode() {
         int hc = state != null? state.hashCode():0;
-        hc = 13*hc + (edge!=null?edge.hashCode():0);
+        hc = 13*hc + (edge != null?edge.hashCode():0);
         return hc;
     }
     @Override

@@ -1,13 +1,9 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Main{ // AFD = (Q, Σ, δ, q0, F)
     /*
@@ -20,10 +16,10 @@ public class Main{ // AFD = (Q, Σ, δ, q0, F)
 
     }
 
-    public static void main(String[] args) throws InterruptedException{
-        Main main = new Main();
-
-        main.start();
+    public static void main(String[] args) throws Exception {
+//        Main main = new Main();
+//        main.start();
+        makeTransitions();
     }
 
     public void start(){
@@ -33,127 +29,95 @@ public class Main{ // AFD = (Q, Σ, δ, q0, F)
             public void run() {
                 while (true){
                     gui.render();
-                    try{
+                    try {
                         Thread.sleep(500);
-                    }catch (InterruptedException i){
+                    } catch (InterruptedException i) {
                         i.getCause();
                     }
 
                 }
             }
         };
+
         t.start();
 
-
     }
 
-    public void makeTransitions() throws IOException {
+    // Arquivo precisa ter 'end' no final para funcionar, caso não tiver , sairá do loop através de erro!
+    public static void makeTransitions() throws IOException {
+        ArrayList<State> listaEstados = new ArrayList<>();
+
         try{
-            BufferedReader br = new BufferedReader(new FileReader("path"));
-            String line = "";
+            // Abrir janela para selecionar arquivo
+            JFileChooser jfc = new JFileChooser();
+            jfc.showDialog(null, "Selecionar");
+            File f = jfc.getSelectedFile();
+            if(!f.exists()) return;
 
-            while((line = br.readLine()) != null){
+            String fita, estadoInicial, estadoFinal;
+            fita = estadoInicial = estadoFinal = null;
 
+            BufferedReader bf = new BufferedReader(new FileReader(f));
+
+            // Ler arquivo
+            while(true) {
+                String linha = bf.readLine().trim();
+
+                if(linha.endsWith("end")) break; // Verificar se o arquivo possui 'end' no final para parar de ler
+
+                if(linha.length() == 0 || linha.charAt(0) == '@') continue;                                        // Comentário
+                if(linha.contains("fita") && fita == null) fita = linha.split(" ")[1];                        // Fita
+                else if(linha.contains("init") && estadoInicial == null) estadoInicial = linha.split(" ")[1]; // Estado Inicial
+                else if(linha.contains("accept") && estadoFinal == null) estadoFinal = linha.split(" ")[1];   // Estado Final
+                else if(linha.contains(",") && linha.split(",").length == 5) {                                // Estados...
+
+                    String estadoAtual, caractereLido, proximoEstado, caractereEscrito, direcao;
+
+                    String[] valores = linha.split(",");
+                    estadoAtual = valores[0];
+                    caractereLido = valores[1];
+                    proximoEstado = valores[2];
+                    caractereEscrito = valores[3];
+                    direcao = valores[4];
+
+                    State StateAtual = null, StateProximo = null;
+
+                    for(State st: listaEstados) {
+                        if(st.getName().equals(estadoAtual)) StateAtual = st;
+                        if(st.getName().equals(proximoEstado)) StateProximo = st;
+                        if(st.getName().equals(estadoFinal)) st.setFinal();
+                    }
+
+                    if(StateAtual == null) {
+                        StateAtual = new State(estadoAtual);
+                        listaEstados.add(StateAtual);
+                    }
+
+                    if(StateProximo == null) {
+                        StateProximo = new State(proximoEstado);
+                        listaEstados.add(StateProximo);
+                    }
+
+                    int pos = listaEstados.indexOf(StateAtual);
+
+                    // Adicionar na lista de estados de acordo com a linha de instrução do arquivo
+                    listaEstados.get(pos).addTransition(caractereLido.charAt(0), StateProximo, caractereEscrito.charAt(0), direcao);
+                }
             }
 
-
-        }catch (FileNotFoundException f){
-            f.getCause();
+        } catch (Exception e) {
+            System.out.println("Erro ao ler arquivo! - " + e.getMessage());
         }
 
+        // A partir daqui, a lista de estados já deve estar pronta e toda conectada
+        listaEstados.forEach((State st) -> {
+            st.transitions.forEach((Transition t) -> {
+                System.out.println(st.getName() + " - " + t.getEdge().getC());
+            });
+        });
     }
 
-    public static void arroba(State q, State qn, String w) {
-        for(char c : w.toCharArray())
-            q.addTransition(qn, c);
-    }
-    public static void L3() {
-        State q0 = new State("q0");
-        State q1 = new State("q1");
-        State q2 = new State("q2");
-        State q3 = new State("q3");
-        State q4 = new State("q4");
-        State q5 = new State("q5");
-        State qn = new State("qn");
-        State qfor = new State("qfor");
-        State qfloat = new State("qfloat");
-        qfor.setFinal();
-        qfloat.setFinal();
-
-        q0.addTransition(q1, 'f');
-        arroba(q0, qn, "loatr");
-
-        q1.addTransition(q2, 'l');
-        q1.addTransition(q5, 'o');
-        arroba(q1, qn, "fatr");
-
-        q2.addTransition(q3, 'o');
-        arroba(q2, qn, "flatr");
-
-        q3.addTransition(q4, 'a');
-        arroba(q3, qn, "flotr");
-
-        q4.addTransition(qfloat, 't');
-        arroba(q4, qn, "floar");
-
-        q5.addTransition(qfor, 'r');
-        arroba(q5, qn, "float");
-
-        arroba(qfor, qn, "floatr");
-        arroba(qfloat, qn, "floatr");
-        arroba(qn, qn, "floatr");
-
-        String w = "fora";
-        AFD afd = new AFD(q0, w);
-        verify(afd.run(), w);
-
-    }
-    public static void L2() {
-        State q0 = new State("q0");
-        State q1 = new State("q1");
-        State q2 = new State("q2");
-        State qf = new State("qf");
-        qf.setFinal();
-
-        q0.addTransition(q1, 'y');
-        q0.addTransition(q2, 'x');
-
-        q1.addTransition(q1, 'y');
-        q1.addTransition(qf, 'x');
-
-        q2.addTransition(q2, 'y');
-        q2.addTransition(q2, 'x');
-
-        qf.addTransition(qf, 'x');
-        qf.addTransition(q1, 'y');
-
-        String w = "yyyyyyxxxyx";
-        AFD afd = new AFD(q0, w);
-        verify(afd.run(), w);
-
-    }
-
-    public static void L1() {
-        State q0 = new State("q0");
-        State q1 = new State("q1");
-        q0.setFinal();
-
-        q0.addTransition(q1, 'a');
-        q0.addTransition(q1, 'b');
-
-        q1.addTransition(q0, 'a');
-        q1.addTransition(q0, 'b');
-
-        String w = "abbabbbaa";
-        AFD afd = new AFD(q0, w);
-        verify(afd.run(), w);
-    }
-
-    public static void verify(boolean b, String w) {
-        if(b) {
-            System.out.println("Reconheceu: " + w);
-            return;
-        }
-        System.out.println("Nao reconheceu: " + w);
-    }
+//    public static void verify(boolean b, String w, boolean showWord) {
+//        System.out.println((b ? "Reconheceu: " : "Não reconheceu: ") + (showWord ? w : ""));
+//    }
 }
