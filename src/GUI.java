@@ -21,15 +21,12 @@ public class GUI extends Canvas{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+//        frame.setResizable(false);
 
         fita = new Cell[21];
         for(int i=0; i<fita.length; i++){
             fita[i] = new Cell(i*50);
         }
-
-        fita[6].setC('a');
-        fita[7].setC('b');
-        fita[8].setC('c');
     }
 
     public Cell[] getFita() { return fita; }
@@ -100,7 +97,6 @@ public class GUI extends Canvas{
         }
 
         g.dispose();
-
 
         bs.show();
     }
