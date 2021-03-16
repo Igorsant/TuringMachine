@@ -1,12 +1,19 @@
 public class Transition {
     private final State state;
     private final Edge edge;
-    public Transition(final State s, final Edge e) {
+    private final Character write;
+    private final Character dir;
+
+    public Transition(final State s, final Edge e, final Character write, final Character dir) {
         this.state = s;
         this.edge = e;
+        this.write = write;
+        this.dir = dir;
     }
     public Edge getEdge() { return edge; }
     public State getState() { return state; }
+    public Character getWrite(){ return write; }
+    public Character getDir() { return dir; }
 
     @Override
     public boolean equals(Object o) {

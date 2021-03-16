@@ -12,6 +12,7 @@ public class GUI extends Canvas{
     private final int WIDTH = 600;
     private final int HEIGHT = 400;
     private int teste = 0, index = 6;
+
     public GUI(){
         setPreferredSize(new Dimension(WIDTH,HEIGHT));
         frame = new JFrame("Turing Machine");
@@ -31,6 +32,22 @@ public class GUI extends Canvas{
         fita[8].setC('c');
     }
 
+    public Cell[] getFita() { return fita; }
+
+    public int getIndex() { return index; }
+
+    public void initFita(String w){
+        int aux = index;
+        char[] letras = w.toCharArray();
+        for(char c:letras){
+            fita[aux].setC(c);
+            aux++;
+        }
+    }
+    public void write(Character c){
+        fita[index].setC(c);
+    }
+
     public void bombineRight(){
         for(Cell f:fita){
             f.setX(f.getX()-f.getWidth());
@@ -43,6 +60,14 @@ public class GUI extends Canvas{
             f.setX(f.getX()+f.getWidth());
         }
         index--;
+    }
+
+    public void successAlert(String w){
+        JOptionPane.showMessageDialog(frame, "Reconheceu "+w, "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void failAlert(String w){
+        JOptionPane.showMessageDialog(frame, "Não reconheceu "+w, "Fail", JOptionPane.ERROR_MESSAGE);
     }
 
     public void render(Thread t){

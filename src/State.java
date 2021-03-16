@@ -13,12 +13,13 @@ public class State {
     public void setFinal() { this.isFinal = true; }
     public Boolean isFinal() { return this.isFinal; }
 
-    public State addTransition(State target, Character c) {
-        return addTransiton(target, Edge.instance(c));
+    //caractereLido.charAt(0), StateProximo, caractereEscrito.charAt(0), direcao
+    public State addTransition(State target, Character c, Character write, Character dir) {
+        return addTransiton(target, write, dir, Edge.instance(c));
     }
-    private State addTransiton(State target, Edge ...edges) {
+    private State addTransiton(State target, Character write, Character dir, Edge... edges) {
         for (Edge e : edges) {
-            Transition transition = new Transition(target, e);
+            Transition transition = new Transition(target, e, write, dir);
             if(transitions.contains(transition))
                 continue;
             transitions.add(transition);
