@@ -90,7 +90,8 @@ public class Main{ // AFD = (Q, Σ, δ, q0, F)
                     // Adicionar na lista de estados de acordo com a linha de instrução do arquivo
                     listaEstados.get(pos).addTransition(StateProximo, caractereLido.charAt(0), caractereEscrito.charAt(0), direcao.charAt(0));
                 }
-            }//fim do while
+            }
+
             State inicial = null;
             for(State s:listaEstados){
                 if(s.getName().equals(estadoInicial)){
